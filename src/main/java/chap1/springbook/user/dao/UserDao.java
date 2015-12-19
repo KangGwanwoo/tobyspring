@@ -7,7 +7,7 @@ import java.sql.*;
 /**
  * Created by daum on 15. 12. 19..
  */
-public class UserDao {
+public abstract class UserDao {
     public void add(User user) throws ClassNotFoundException,SQLException{
         Connection c = getConnection();
 
@@ -47,15 +47,10 @@ public class UserDao {
         return user;
     }
 
-    public Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        return DriverManager.getConnection(
-                "jdbc:mysql://localhost/tobySpring", "root", "Starter?5"
-        );
-    }
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao dao = new UserDao();
+        UserDao dao = new DUserDao();
 
         User user = new User();
         user.setId("whiteship");
