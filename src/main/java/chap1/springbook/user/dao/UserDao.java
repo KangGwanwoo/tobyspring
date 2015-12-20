@@ -2,22 +2,23 @@ package chap1.springbook.user.dao;
 
 import chap1.springbook.user.domain.User;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 /**
  * Created by daum on 15. 12. 19..
  */
 public class UserDao {
-    private ConnectionMaker connectionMaker;
+    private DataSource dataSource;
 
-    public void setConnectionMaker(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public UserDao(){
     }
     public void add(User user) throws ClassNotFoundException,SQLException{
-        Connection c = connectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id, name, password) values(?,?,?)"
@@ -33,7 +34,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = connectionMaker.makeConnection();
+        Connection c = dataSource.getConnection();
 
 
 
