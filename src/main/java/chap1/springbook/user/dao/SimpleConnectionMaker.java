@@ -5,16 +5,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Created by daum on 15. 12. 19..
+ * Created by daum on 15. 12. 20..
  */
-public class DUserDao extends UserDao {
-
-
-    @Override
-    public Connection getConnection() throws ClassNotFoundException, SQLException {
+public class SimpleConnectionMaker {
+    public Connection makeNewConnection() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection c = DriverManager.getConnection(
-                "jdbc:mysql://localhost/tobySpring","root","Starter?5"
+                "jdbc:mysql://localhost/tobySpring", "root", "Starter?5"
         );
         return c;
     }

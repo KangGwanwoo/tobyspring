@@ -7,9 +7,14 @@ import java.sql.*;
 /**
  * Created by daum on 15. 12. 19..
  */
-public abstract class UserDao {
+public class UserDao {
+    private SimpleConnectionMaker simpleConnectionMaker;
+
+    public UserDao(SimpleConnectionMaker simpleConnectionMaker){
+        this.simpleConnectionMaker=simpleConnectionMaker;
+    }
     public void add(User user) throws ClassNotFoundException,SQLException{
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id, name, password) values(?,?,?)"
@@ -25,7 +30,7 @@ public abstract class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = getConnection();
+        Connection c = simpleConnectionMaker.makeNewConnection();
 
 
 
@@ -47,10 +52,9 @@ public abstract class UserDao {
         return user;
     }
 
-    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao dao = new DUserDao();
+        UserDao dao = new UserDao(new SimpleConnectionMaker());
 
         User user = new User();
         user.setId("whiteship");
