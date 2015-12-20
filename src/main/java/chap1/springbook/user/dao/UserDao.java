@@ -8,13 +8,13 @@ import java.sql.*;
  * Created by daum on 15. 12. 19..
  */
 public class UserDao {
-    private SimpleConnectionMaker simpleConnectionMaker;
+    private ConnectionMaker connectionMaker;
 
-    public UserDao(SimpleConnectionMaker simpleConnectionMaker){
-        this.simpleConnectionMaker=simpleConnectionMaker;
+    public UserDao(){
+        this.connectionMaker=new DConnectionMaker();
     }
     public void add(User user) throws ClassNotFoundException,SQLException{
-        Connection c = simpleConnectionMaker.makeNewConnection();
+        Connection c = connectionMaker.makeConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id, name, password) values(?,?,?)"
@@ -30,7 +30,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = simpleConnectionMaker.makeNewConnection();
+        Connection c = connectionMaker.makeConnection();
 
 
 
@@ -54,7 +54,7 @@ public class UserDao {
 
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao dao = new UserDao(new SimpleConnectionMaker());
+        UserDao dao = new UserDao(new DConnectionMaker());
 
         User user = new User();
         user.setId("whiteship");
