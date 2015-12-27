@@ -6,6 +6,7 @@ import chap1.springbook.user.dao.DaoFactory;
 import chap1.springbook.user.dao.UserDao;
 import chap1.springbook.user.domain.User;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -20,12 +21,18 @@ import static org.hamcrest.CoreMatchers.is;
  * Created by daum on 15. 12. 20..
  */
 public class UserDaoTest {
+    private UserDao dao;
+
+    @Before
+    public void setUp(){
+        GenericXmlApplicationContext context = new GenericXmlApplicationContext("spring-config.xml");
+
+        dao = context.getBean("userDao", UserDao.class);
+    }
 
     @Test
     public void addAndGet() throws ClassNotFoundException, SQLException {
-        GenericXmlApplicationContext context = new GenericXmlApplicationContext("spring-config.xml");
 
-        UserDao dao = context.getBean("userDao", UserDao.class);
         User user1 = new User("gyumee", "박상철", "springno1");
         User user2 = new User("leegw700", "이길원", "springno2");
 
@@ -48,8 +55,6 @@ public class UserDaoTest {
 
     @Test
     public void count() throws SQLException, ClassNotFoundException {
-        GenericXmlApplicationContext context = new GenericXmlApplicationContext("spring-config.xml");
-        UserDao dao = context.getBean("userDao", UserDao.class);
         User user = new User("gyumee", "박상철", "springno1");
         User user2 = new User("leegw700", "이길원", "springno2");
         User user3 = new User("bumjin", "박범진", "springno3");
@@ -68,9 +73,6 @@ public class UserDaoTest {
 
     @Test(expected = EmptyResultDataAccessException.class)
     public void getuserFaulure() throws SQLException, ClassNotFoundException {
-        ApplicationContext context = new GenericXmlApplicationContext("spring-config.xml");
-
-        UserDao dao = context.getBean("userDao", UserDao.class);
 
         dao.deleteAll();
         Assert.assertThat(dao.getCount(), is(0));
