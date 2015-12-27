@@ -8,10 +8,14 @@ import chap1.springbook.user.domain.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.SQLException;
 
@@ -20,15 +24,22 @@ import static org.hamcrest.CoreMatchers.is;
 /**
  * Created by daum on 15. 12. 20..
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="/spring-config.xml")
 public class UserDaoTest {
-    private UserDao dao;
     private User user1;
+
     private User user2;
     private User user3;
 
+    @Autowired
+    private ApplicationContext context;
+
+    @Autowired
+    private UserDao dao;
+    
     @Before
     public void setUp(){
-        GenericXmlApplicationContext context = new GenericXmlApplicationContext("spring-config.xml");
 
         dao = context.getBean("userDao", UserDao.class);
 
