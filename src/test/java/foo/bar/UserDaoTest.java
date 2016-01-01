@@ -1,5 +1,6 @@
 package foo.bar;
 
+import chap1.springbook.learningtest.template.Calculator;
 import chap1.springbook.user.dao.ConnectionMaker;
 import chap1.springbook.user.dao.DConnectionMaker;
 import chap1.springbook.user.dao.DaoFactory;
@@ -17,6 +18,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -90,4 +92,5 @@ public class UserDaoTest {
 
         dao.get("unkown_id");
     }
+
 }
