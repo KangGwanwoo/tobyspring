@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 
@@ -93,4 +94,16 @@ public class UserDaoTest {
         dao.get("unkown_id");
     }
 
+
+    @Test
+    public void getAll() throws SQLException, ClassNotFoundException {
+        dao.deleteAll();
+        dao.add(user1);
+        List<User> users1 = dao.getAll();
+        checkSameUser(user1,users1.get(0));
+    }
+
+    public void checkSameUser(User user1,User user2){
+        Assert.assertThat(user1.getId(),is(user2.getId()));
+    }
 }
