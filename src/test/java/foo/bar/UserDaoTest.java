@@ -28,7 +28,6 @@ import static org.hamcrest.CoreMatchers.is;
 @ContextConfiguration(locations="/spring-config.xml")
 public class UserDaoTest {
     private User user1;
-
     private User user2;
     private User user3;
 
@@ -37,7 +36,7 @@ public class UserDaoTest {
 
     @Autowired
     private UserDao dao;
-    
+
     @Before
     public void setUp(){
 
