@@ -1,10 +1,7 @@
 package foo.bar;
 
-import chap1.springbook.learningtest.template.Calculator;
-import chap1.springbook.user.dao.ConnectionMaker;
-import chap1.springbook.user.dao.DConnectionMaker;
-import chap1.springbook.user.dao.DaoFactory;
 import chap1.springbook.user.dao.UserDao;
+import chap1.springbook.user.dao.UserDaoJdbc;
 import chap1.springbook.user.domain.User;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,13 +9,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -86,7 +81,7 @@ public class UserDaoTest {
     }
 
     @Test(expected = EmptyResultDataAccessException.class)
-    public void getuserFaulure() throws SQLException, ClassNotFoundException {
+    public void getUserFaulure() throws SQLException, ClassNotFoundException {
 
         dao.deleteAll();
         Assert.assertThat(dao.getCount(), is(0));
@@ -100,10 +95,17 @@ public class UserDaoTest {
         dao.deleteAll();
         dao.add(user1);
         List<User> users1 = dao.getAll();
-        checkSameUser(user1,users1.get(0));
+        checkSameUser(user1, users1.get(0));
     }
 
     public void checkSameUser(User user1,User user2){
         Assert.assertThat(user1.getId(),is(user2.getId()));
+    }
+
+    @Test(expected = DataAccessException.class)
+    public void duplciateKey(){
+        dao.deleteAll();
+        dao.add(user1);
+        dao.add(user1);
     }
 }
