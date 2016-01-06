@@ -37,8 +37,8 @@ public class UserDaoJdbc implements UserDao{
 
     public UserDaoJdbc(){
     }
-    public void add(final User user) {
-        this.jdbcTemplate.update("insert into users(id,name,password,level,login,recommend) values(?,?,?,?,?,?)", user.getId(),user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend());
+    public int add(final User user) {
+        return this.jdbcTemplate.update("insert into users(id,name,password,level,login,recommend) values(?,?,?,?,?,?)", user.getId(),user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend());
     }
 
     public User get(String id){
@@ -46,8 +46,8 @@ public class UserDaoJdbc implements UserDao{
         return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id}, userMapper);
     }
 
-    public void deleteAll(){
-        this.jdbcTemplate.update(
+    public int deleteAll(){
+        return this.jdbcTemplate.update(
                 "delete from users"
         );
     }
@@ -62,8 +62,8 @@ public class UserDaoJdbc implements UserDao{
     }
 
     @Override
-    public void update(User user) {
-        this.jdbcTemplate.update("update users set name =?, password = ?, level = ?, login = ?, recommend = ? where id = ? ",
+    public int update(User user) {
+        return this.jdbcTemplate.update("update users set name =?, password = ?, level = ?, login = ?, recommend = ? where id = ? ",
                 user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId());
     }
 }

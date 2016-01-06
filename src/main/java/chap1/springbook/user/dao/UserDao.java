@@ -9,15 +9,15 @@ import java.util.List;
  * Created by daum on 16. 1. 3..
  */
 public interface UserDao {
-    void add(final User user);
+    int add(final User user);
 
     User get(String id);
 
-    void deleteAll();
+    int deleteAll();
 
     int getCount();
 
     List<User> getAll();
 
-    void update(User user1);
+    int update(User user1);
 }

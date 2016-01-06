@@ -98,9 +98,9 @@ public class UserDaoTest {
 
     public void checkSameUser(User user1,User user2){
 
-        Assert.assertThat(user1.getId(),is(user2.getId()));
-        Assert.assertThat(user1.getLevel(),is(user2.getLevel()));
-        Assert.assertThat(user1.getLogin(),is(user2.getLogin()));
+        Assert.assertThat(user1.getId(), is(user2.getId()));
+        Assert.assertThat(user1.getLevel(), is(user2.getLevel()));
+        Assert.assertThat(user1.getLogin(), is(user2.getLogin()));
     }
 
     @Test(expected = DataAccessException.class)
@@ -115,14 +115,19 @@ public class UserDaoTest {
         dao.deleteAll();
 
         dao.add(user1);
+        dao.add(user2)
 
+        ;
         user1.setName("오민규");
         user1.setPassword("spring06");
         user1.setLevel(Level.GOLD);
         user1.setLogin(1000);
-        dao.update(user1);
+        Assert.assertEquals(dao.update(user1), 1);
 
         User user1update = dao.get(user1.getId());
         checkSameUser(user1, user1update);
+
+        User user2same = dao.get(user2.getId());
+        checkSameUser(user2, user2same);
     }
 }
