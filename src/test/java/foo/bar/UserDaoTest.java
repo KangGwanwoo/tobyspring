@@ -57,7 +57,7 @@ public class UserDaoTest {
         Assert.assertThat(dao.getCount(), is(2));
 
         User userget1 = dao.get(user1.getId());
-        checkSameUser(userget1,user1);
+        checkSameUser(userget1, user1);
 
         User userget2 = dao.get(user2.getId());
         checkSameUser(userget2,user2);
@@ -108,5 +108,21 @@ public class UserDaoTest {
         dao.deleteAll();
         dao.add(user1);
         dao.add(user1);
+    }
+
+    @Test
+    public void update(){
+        dao.deleteAll();
+
+        dao.add(user1);
+
+        user1.setName("오민규");
+        user1.setPassword("spring06");
+        user1.setLevel(Level.GOLD);
+        user1.setLogin(1000);
+        dao.update(user1);
+
+        User user1update = dao.get(user1.getId());
+        checkSameUser(user1, user1update);
     }
 }
