@@ -37,6 +37,7 @@ public class UserDaoJdbc implements UserDao{
 
     public UserDaoJdbc(){
     }
+
     public int add(final User user) {
         return this.jdbcTemplate.update("insert into users(id,name,password,level,login,recommend) values(?,?,?,?,?,?)", user.getId(),user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend());
     }

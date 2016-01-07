@@ -3,6 +3,7 @@ package foo.bar;
 import chap1.springbook.user.dao.UserDao;
 import chap1.springbook.user.domain.Level;
 import chap1.springbook.user.domain.User;
+import chap1.springbook.user.service.UserLevelUpgradePolicy;
 import chap1.springbook.user.service.UserService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,8 +18,8 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static chap1.springbook.user.service.UserService.MIN_RECCOMEND_FOR_GOLD;
-import static chap1.springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
+import static chap1.springbook.user.service.UserLevelUpgradePolicyDefault.MIN_RECCOMEND_FOR_GOLD;
+import static chap1.springbook.user.service.UserLevelUpgradePolicyDefault.MIN_LOGCOUNT_FOR_SILVER;
 /**
  * Created by daum on 16. 1. 6..
  */
