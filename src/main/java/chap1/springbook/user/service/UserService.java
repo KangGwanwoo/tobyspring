@@ -3,6 +3,7 @@ package chap1.springbook.user.service;
 import chap1.springbook.user.dao.UserDao;
 import chap1.springbook.user.domain.Level;
 import chap1.springbook.user.domain.User;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -42,5 +43,11 @@ public class UserService {
             }
 
         }
+    }
+
+
+    public void add(User user) {
+        if (user.getLevel() == null) user.setLevel(Level.BASIC);
+        userDao.add(user);
     }
 }
