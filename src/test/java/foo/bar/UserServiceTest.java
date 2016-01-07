@@ -17,7 +17,8 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-
+import static chap1.springbook.user.service.UserService.MIN_RECCOMEND_FOR_GOLD;
+import static chap1.springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
 /**
  * Created by daum on 16. 1. 6..
  */
@@ -37,10 +38,10 @@ public class UserServiceTest {
     public void setUp(){
 
         users = Arrays.asList(
-                new User("bumjin","박범진","p1", Level.BASIC,49,0),
-                new User("joytouch","강명성","p2", Level.BASIC,50,0),
-                new User("erwins","신승환","p3", Level.SILVER,60,29),
-                new User("madnite1","이상호","p4", Level.SILVER,60,30),
+                new User("bumjin","박범진","p1", Level.BASIC,MIN_LOGCOUNT_FOR_SILVER-1,0),
+                new User("joytouch","강명성","p2", Level.BASIC,MIN_LOGCOUNT_FOR_SILVER,0),
+                new User("erwins","신승환","p3", Level.SILVER,60,MIN_RECCOMEND_FOR_GOLD-1),
+                new User("madnite1","이상호","p4", Level.SILVER,60,MIN_RECCOMEND_FOR_GOLD),
                 new User("green","오민규","p5", Level.GOLD,100,100)
         );
     }
@@ -56,11 +57,11 @@ public class UserServiceTest {
         for(User user:users) userDao.add(user);
 
         userService.upgradeLevels();
-        checkLevel(users.get(0), Level.BASIC);
-        checkLevel(users.get(1), Level.SILVER);
-        checkLevel(users.get(2), Level.SILVER);
-        checkLevel(users.get(3), Level.GOLD);
-        checkLevel(users.get(4), Level.GOLD);
+        checkLevel(users.get(0), false);
+        checkLevel(users.get(1), true);
+        checkLevel(users.get(2), false);
+        checkLevel(users.get(3), true);
+        checkLevel(users.get(4), false);
 
 
 
@@ -81,12 +82,17 @@ public class UserServiceTest {
         User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
 
         Assert.assertThat(userWithLevelRead.getLevel(),is(userWithLevel.getLevel()));
-        Assert.assertThat(userWithoutLevelRead.getLevel(),is(userWithoutLevel.getLevel()));
+        Assert.assertThat(userWithoutLevelRead.getLevel(), is(userWithoutLevel.getLevel()));
 
     }
-    private void checkLevel(User user, Level expectedLevel) {
+    private void checkLevel(User user, boolean upgraded) {
+
         User userUpdate = userDao.get(user.getId());
-        Assert.assertThat(userUpdate.getLevel(), is(expectedLevel));
+        if(upgraded){
+            Assert.assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
+        }else{
+            Assert.assertThat(userUpdate.getLevel(), is(user.getLevel()));
+        }
     }
 
 }
