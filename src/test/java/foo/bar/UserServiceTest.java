@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.theInstance;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static chap1.springbook.user.service.UserLevelUpgradePolicyDefault.MIN_RECCOMEND_FOR_GOLD;
 import static chap1.springbook.user.service.UserLevelUpgradePolicyDefault.MIN_LOGCOUNT_FOR_SILVER;
@@ -27,11 +28,31 @@ import static chap1.springbook.user.service.UserLevelUpgradePolicyDefault.MIN_LO
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/spring-config.xml")
 public class UserServiceTest {
+
+    static class TestUserService extends UserService{
+        private String id;
+
+        private TestUserService(String id){
+            this.id = id;
+        }
+
+        protected void upgradeLevel(User user){
+            if(user.getId().equals(this.id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
+        }
+    }
+
+    static class TestUserServiceException extends RuntimeException{
+
+    }
     @Autowired
     UserService userService;
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    UserLevelUpgradePolicy userLevelUpgradePolicy;
 
     List<User> users;
 
@@ -45,6 +66,17 @@ public class UserServiceTest {
                 new User("madnite1","이상호","p4", Level.SILVER,60,MIN_RECCOMEND_FOR_GOLD),
                 new User("green","오민규","p5", Level.GOLD,100,100)
         );
+    }
+
+    private void checkLevel(User user, boolean upgraded) {
+
+        User userUpdate = userDao.get(user.getId());
+
+        if(upgraded){
+            Assert.assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
+        }else{
+            Assert.assertThat(userUpdate.getLevel(), is(user.getLevel()));
+        }
     }
 
     @Test
@@ -65,9 +97,7 @@ public class UserServiceTest {
         checkLevel(users.get(4), false);
 
 
-
     }
-
     @Test
     public void add(){
         userDao.deleteAll();
@@ -82,18 +112,28 @@ public class UserServiceTest {
         User userWithLevelRead = userDao.get(userWithLevel.getId());
         User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
 
-        Assert.assertThat(userWithLevelRead.getLevel(),is(userWithLevel.getLevel()));
+        Assert.assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
         Assert.assertThat(userWithoutLevelRead.getLevel(), is(userWithoutLevel.getLevel()));
 
     }
-    private void checkLevel(User user, boolean upgraded) {
 
-        User userUpdate = userDao.get(user.getId());
-        if(upgraded){
-            Assert.assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
-        }else{
-            Assert.assertThat(userUpdate.getLevel(), is(user.getLevel()));
+
+    @Test
+    public void upgradeAllOrNothing(){
+        TestUserService testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(this.userDao);
+        testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
+        userDao.deleteAll();
+
+        for(User user:users) userDao.add(user);
+
+        try{
+            testUserService.upgradeLevels();
+            Assert.fail("TestUserServiceException expected");
+        }catch (TestUserServiceException e){
+
         }
-    }
 
+        checkLevel(users.get(1),false);
+    }
 }

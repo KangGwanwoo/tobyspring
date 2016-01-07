@@ -15,7 +15,7 @@ public class UserService {
 
     UserDao userDao;
 
-    UserLevelUpgradePolicy userLevelUpgradePolicy;
+    public UserLevelUpgradePolicy userLevelUpgradePolicy;
 
     public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) {
         this.userLevelUpgradePolicy = userLevelUpgradePolicy;
@@ -31,10 +31,15 @@ public class UserService {
 
         for(User user : users){
             if(userLevelUpgradePolicy.canUpgradeLevel(user)){
-                userLevelUpgradePolicy.upgradeLevel(user);
+                upgradeLevel(user);
             }
 
         }
+    }
+
+    protected void upgradeLevel(User user){
+        user.upgradeLevel();
+        userDao.update(user);
     }
 
     public void add(User user) {
