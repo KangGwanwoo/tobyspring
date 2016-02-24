@@ -24,10 +24,13 @@ public class UserService {
 
     UserDao userDao;
 
-    private DataSource dataSource;
-
-
     public UserLevelUpgradePolicy userLevelUpgradePolicy;
+
+    private PlatformTransactionManager transactionManager;
+
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
 
     public void setUserLevelUpgradePolicy(UserLevelUpgradePolicy userLevelUpgradePolicy) {
         this.userLevelUpgradePolicy = userLevelUpgradePolicy;
@@ -39,9 +42,6 @@ public class UserService {
     }
 
     public void upgradeLevels() throws Exception {
-        PlatformTransactionManager transactionManager =
-                new DataSourceTransactionManager(dataSource); // JDBC 트랜잭션 추상 오브젝트 생성
-
         TransactionStatus status =
                 transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
@@ -70,7 +70,4 @@ public class UserService {
         userDao.add(user);
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 }
