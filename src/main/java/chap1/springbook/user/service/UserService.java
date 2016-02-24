@@ -4,7 +4,11 @@ import chap1.springbook.user.dao.UserDao;
 import chap1.springbook.user.domain.Level;
 import chap1.springbook.user.domain.User;
 import org.junit.Test;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.sql.DataSource;
@@ -35,9 +39,11 @@ public class UserService {
     }
 
     public void upgradeLevels() throws Exception {
-        TransactionSynchronizationManager.initSynchronization(); // 트랜잭션 동기화 관리자를 이용해 동기화 작업을 초기화한다.
-        Connection c = DataSourceUtils.getConnection(dataSource); // DB커넥션을 생성하고 트랜잭션을 시작한다.
-        c.setAutoCommit(false);
+        PlatformTransactionManager transactionManager =
+                new DataSourceTransactionManager(dataSource); // JDBC 트랜잭션 추상 오브젝트 생성
+
+        TransactionStatus status =
+                transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
             List<User> users = userDao.getAll();
 
@@ -47,15 +53,10 @@ public class UserService {
                 }
 
             }
-
-            c.commit(); // 정상적으로 작업을 마치면 트랜잭션 커밋
+            transactionManager.commit(status);
         }catch (Exception e){
-            c.rollback(); //예외가 발생하면 롤백한다.
+            transactionManager.rollback(status);
             throw e;
-        }finally {
-            DataSourceUtils.releaseConnection(c,dataSource); // 스프링 유틸리티 메소드를 이용해 DB 커넥션을 안전하게 닫는다.
-            TransactionSynchronizationManager.unbindResource(this.dataSource);
-            TransactionSynchronizationManager.clearSynchronization(); // 동기화 작업 종료 및 정리
         }
     }
 
