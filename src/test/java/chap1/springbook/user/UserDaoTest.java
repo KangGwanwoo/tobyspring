@@ -1,4 +1,4 @@
-package foo.bar;
+package chap1.springbook.user;
 
 import chap1.springbook.user.dao.UserDao;
 import chap1.springbook.user.dao.UserDaoJdbc;
@@ -24,7 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
  * Created by daum on 15. 12. 20..
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/spring-config.xml")
+@ContextConfiguration(locations = "/spring-config.xml")
 public class UserDaoTest {
     private User user1;
     private User user2;
@@ -37,12 +37,12 @@ public class UserDaoTest {
     private UserDao dao;
 
     @Before
-    public void setUp(){
+    public void setUp() {
 
         dao = context.getBean("userDao", UserDao.class);
-        user1 = new User("gyumee", "박상철", "springno1", Level.BASIC,1,0);
-        user2 = new User("leegw700", "이길원", "springno2", Level.SILVER,55,10);
-        user3 = new User("bumjin", "박범진", "springno3", Level.GOLD,100,40);
+        user1 = new User("gyumee", "박상철", "springno1", Level.BASIC, 1, 0);
+        user2 = new User("leegw700", "이길원", "springno2", Level.SILVER, 55, 10);
+        user3 = new User("bumjin", "박범진", "springno3", Level.GOLD, 100, 40);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class UserDaoTest {
         checkSameUser(userget1, user1);
 
         User userget2 = dao.get(user2.getId());
-        checkSameUser(userget2,user2);
+        checkSameUser(userget2, user2);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class UserDaoTest {
         checkSameUser(user1, users1.get(0));
     }
 
-    public void checkSameUser(User user1,User user2){
+    public void checkSameUser(User user1, User user2) {
 
         Assert.assertThat(user1.getId(), is(user2.getId()));
         Assert.assertThat(user1.getLevel(), is(user2.getLevel()));
@@ -104,14 +104,14 @@ public class UserDaoTest {
     }
 
     @Test(expected = DataAccessException.class)
-    public void duplciateKey(){
+    public void duplciateKey() {
         dao.deleteAll();
         dao.add(user1);
         dao.add(user1);
     }
 
     @Test
-    public void update(){
+    public void update() {
         dao.deleteAll();
 
         dao.add(user1);

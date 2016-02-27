@@ -18,7 +18,7 @@ public class JdbcContext {
     }
 
 
-    public void executeSql(final String query) throws SQLException{
+    public void executeSql(final String query) throws SQLException {
         workStatementStrategy(new StatementStrategy() {
             @Override
             public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
@@ -26,28 +26,29 @@ public class JdbcContext {
             }
         });
     }
-    public void workStatementStrategy(StatementStrategy stmt) throws SQLException{
+
+    public void workStatementStrategy(StatementStrategy stmt) throws SQLException {
 
         Connection c = null;
         PreparedStatement ps = null;
 
-        try{
+        try {
             c = dataSource.getConnection();
             ps = stmt.makePreparedStatement(c);
             ps.executeUpdate();
-        }catch (SQLException se){
+        } catch (SQLException se) {
             throw se;
-        }finally {
-            if(ps != null) {
+        } finally {
+            if (ps != null) {
                 try {
                     ps.close();
-                }catch (SQLException e){
+                } catch (SQLException e) {
                 }
             }
-            if(c != null){
-                try{
+            if (c != null) {
+                try {
                     c.close();
-                }catch (SQLException e){
+                } catch (SQLException e) {
 
                 }
             }

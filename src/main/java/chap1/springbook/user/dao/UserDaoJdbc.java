@@ -13,7 +13,8 @@ import java.util.List;
 /**
  * Created by daum on 15. 12. 19..
  */
-public class UserDaoJdbc implements UserDao{
+public class UserDaoJdbc implements UserDao {
+
     private JdbcTemplate jdbcTemplate;
     private RowMapper<User> userMapper =
             new RowMapper<User>() {
@@ -35,31 +36,31 @@ public class UserDaoJdbc implements UserDao{
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public UserDaoJdbc(){
+    public UserDaoJdbc() {
     }
 
     public int add(final User user) {
-        return this.jdbcTemplate.update("insert into users(id,name,password,level,login,recommend) values(?,?,?,?,?,?)", user.getId(),user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend());
+        return this.jdbcTemplate.update("insert into users(id,name,password,level,login,recommend) values(?,?,?,?,?,?)", user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
     }
 
-    public User get(String id){
+    public User get(String id) {
 
         return this.jdbcTemplate.queryForObject("select * from users where id = ?", new Object[]{id}, userMapper);
     }
 
-    public int deleteAll(){
+    public int deleteAll() {
         return this.jdbcTemplate.update(
                 "delete from users"
         );
     }
 
 
-    public int getCount(){
+    public int getCount() {
         return this.jdbcTemplate.queryForInt("select count(*) from users");
     }
 
     public List<User> getAll() {
-        return this.jdbcTemplate.query("select * from users order by id",userMapper);
+        return this.jdbcTemplate.query("select * from users order by id", userMapper);
     }
 
     @Override
