@@ -40,7 +40,7 @@ public class User {
         this.login = login;
     }
 
-    public User(String id, String name, String password, Level level,int login, int recommend){
+    public User(String id, String name, String password, Level level, int login, int recommend) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -49,8 +49,9 @@ public class User {
         this.recommend = recommend;
     }
 
-    public User(){}
-    
+    public User() {
+    }
+
     public String getId() {
         return id;
     }
@@ -78,9 +79,9 @@ public class User {
     public void upgradeLevel() {
 
         Level nextLevel = this.level.nextLevel();
-        if (nextLevel == null){
+        if (nextLevel == null) {
             throw new IllegalStateException(this.level + "은 업그레이드가 불가능합니다.");
-        }else{
+        } else {
             this.level = nextLevel;
         }
     }

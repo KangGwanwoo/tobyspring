@@ -3,7 +3,6 @@ package chap1.springbook.user.service;
 import chap1.springbook.user.dao.UserDao;
 import chap1.springbook.user.domain.Level;
 import chap1.springbook.user.domain.User;
-import org.junit.Test;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -54,13 +53,13 @@ public class UserService {
 
             }
             transactionManager.commit(status);
-        }catch (Exception e){
+        } catch (Exception e) {
             transactionManager.rollback(status);
             throw e;
         }
     }
 
-    protected void upgradeLevel(User user){
+    protected void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
     }

@@ -19,19 +19,23 @@ public class UserLevelUpgradePolicyDefault implements UserLevelUpgradePolicy {
 
 
     @Override
-    public void upgradeLevel(User user){
+    public void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
     }
 
     @Override
-    public boolean canUpgradeLevel(User user){
+    public boolean canUpgradeLevel(User user) {
         Level currentLevel = user.getLevel();
-        switch (currentLevel){
-            case BASIC:return (user.getLogin() >= MIN_LOGCOUNT_FOR_SILVER);
-            case SILVER:return (user.getRecommend() >= MIN_RECCOMEND_FOR_GOLD);
-            case GOLD:return false;
-            default:throw new IllegalArgumentException("Unknown Level :"+currentLevel);
+        switch (currentLevel) {
+            case BASIC:
+                return (user.getLogin() >= MIN_LOGCOUNT_FOR_SILVER);
+            case SILVER:
+                return (user.getRecommend() >= MIN_RECCOMEND_FOR_GOLD);
+            case GOLD:
+                return false;
+            default:
+                throw new IllegalArgumentException("Unknown Level :" + currentLevel);
         }
     }
 }
