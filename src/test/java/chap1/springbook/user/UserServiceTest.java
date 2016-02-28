@@ -3,9 +3,7 @@ package chap1.springbook.user;
 import chap1.springbook.user.dao.UserDao;
 import chap1.springbook.user.domain.Level;
 import chap1.springbook.user.domain.User;
-import chap1.springbook.user.service.UserLevelUpgradePolicy;
-import chap1.springbook.user.service.UserServiceImpl;
-import chap1.springbook.user.service.UserServiceTx;
+import chap1.springbook.user.service.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -133,9 +132,12 @@ public class UserServiceTest {
         testUserService.setUserDao(this.userDao);
         testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
 
-        UserServiceTx txUserService = new UserServiceTx();
-        txUserService.setTransactionManager(transactionManager);
-        txUserService.setUserService(testUserService);
+        TransactionHandler txHandler = new TransactionHandler();
+        txHandler.setTarget(testUserService);
+        txHandler.setTransactionManager(transactionManager);
+        txHandler.setPattern("upgradeLevels");
+        UserService txUserService = (UserService) Proxy.newProxyInstance(getClass().getClassLoader(),new Class[]{UserService.class
+        },txHandler);
 
         userDao.deleteAll();
 
