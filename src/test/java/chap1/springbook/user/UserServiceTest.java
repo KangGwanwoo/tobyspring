@@ -3,23 +3,24 @@ package chap1.springbook.user;
 import chap1.springbook.user.dao.UserDao;
 import chap1.springbook.user.domain.Level;
 import chap1.springbook.user.domain.User;
-import chap1.springbook.user.service.UserLevelUpgradePolicy;
-import chap1.springbook.user.service.UserService;
+import chap1.springbook.user.service.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.theInstance;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static chap1.springbook.user.service.UserLevelUpgradePolicyDefault.MIN_RECCOMEND_FOR_GOLD;
 import static chap1.springbook.user.service.UserLevelUpgradePolicyDefault.MIN_LOGCOUNT_FOR_SILVER;
@@ -32,13 +33,14 @@ import static chap1.springbook.user.service.UserLevelUpgradePolicyDefault.MIN_LO
 @ContextConfiguration(locations = "/spring-config.xml")
 public class UserServiceTest {
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;
 
         private TestUserService(String id) {
             this.id = id;
         }
 
+        @Override
         protected void upgradeLevel(User user) {
             if (user.getId().equals(this.id)) throw new TestUserServiceException();
             super.upgradeLevel(user);
@@ -62,6 +64,9 @@ public class UserServiceTest {
     PlatformTransactionManager transactionManager;
 
     List<User> users;
+
+    @Autowired
+    ApplicationContext context;
 
     @Before
     public void setUp() {
@@ -128,17 +133,23 @@ public class UserServiceTest {
 
 
     @Test
+    @DirtiesContext // 컨텍스트 무효화 애노테이션
     public void upgradeAllOrNothing() throws Exception {
+
         TestUserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
         testUserService.setUserLevelUpgradePolicy(this.userLevelUpgradePolicy);
-        testUserService.setTransactionManager(transactionManager);
+
+        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
+        txProxyFactoryBean.setTarget(testUserService);
+
+        UserService txUserService = (UserService) txProxyFactoryBean.getObject();
         userDao.deleteAll();
 
         for (User user : users) userDao.add(user);
 
         try {
-            testUserService.upgradeLevels();
+            txUserService.upgradeLevels();
             Assert.fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
 
