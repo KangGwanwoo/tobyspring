@@ -23,9 +23,11 @@
         <property name="dataSource" ref="dataSource"></property>
     </bean>
 
-    <bean id="userService" class="chap1.springbook.user.service.UserServiceTx">
+    <bean id="userService" class="chap1.springbook.user.service.TxProxyFactoryBean">
+        <property name="target" ref="userServiceImpl" />
         <property name="transactionManager" ref="transactionManager"></property>
-        <property name="userService" ref="userServiceImpl"></property>
+        <property name="pattern" value="upgradeLevels"/>
+        <property name="serviceInterface" value="chap1.springbook.user.service.UserService"/>
     </bean>
 
     <bean id="userServiceImpl" class="chap1.springbook.user.service.UserServiceImpl">
