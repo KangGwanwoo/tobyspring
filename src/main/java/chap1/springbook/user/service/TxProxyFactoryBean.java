@@ -36,7 +36,7 @@ public class TxProxyFactoryBean implements FactoryBean<Object> {
         txHandler.setTarget(target);
         txHandler.setTransactionManager(transactionManager);
         txHandler.setPattern(pattern);
-        return Proxy.newProxyInstance(getClass().getClassLoader(),new Class[] {serviceInterface},txHandler);
+        return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{serviceInterface}, txHandler);
     }
 
     @Override

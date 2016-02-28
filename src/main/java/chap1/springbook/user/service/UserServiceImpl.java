@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by daum on 16. 1. 6..
  */
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
 
     UserDao userDao;
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService{
         this.userDao = userDao;
     }
 
-    public void upgradeLevels(){
+    public void upgradeLevels() {
         List<User> users = userDao.getAll();
 
         for (User user : users) {

@@ -31,9 +31,9 @@ public class TransactionHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if( method.getName().startsWith(pattern)){
+        if (method.getName().startsWith(pattern)) {
             return invokeInTransaction(method, args);
-        }else{
+        } else {
             return method.invoke(target, args);
         }
     }
@@ -41,10 +41,10 @@ public class TransactionHandler implements InvocationHandler {
     private Object invokeInTransaction(Method method, Object[] args) throws Throwable {
         TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
         try {
-            Object ret = method.invoke(target,args);
+            Object ret = method.invoke(target, args);
             this.transactionManager.commit(status);
             return ret;
-        } catch (InvocationTargetException e){
+        } catch (InvocationTargetException e) {
             this.transactionManager.rollback(status);
             throw e.getTargetException();
         }
